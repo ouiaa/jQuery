@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>03-jQuery对象与DOM对象的转换</title>
+    <script src="jquery.min.js"></script>
+</head>
+
+<body>
+    <video src="media/mi.mp4" muted></video>
+    <script>
+        //1.将DOM对象转换为jQuery对象
+        //1)用jQuery方式获取就是jQuery对象
+        // $('video')
+        //2)用原生js获取就是DOM对象
+        var myVideo = document.querySelector('video')
+
+        //2.将jQuery对象转换为DOM对象
+        $('video')[0].play()  //$('div')[index]  index是索引号
+        // $('video').get(0).play() //$('div').get(index)	index 是索引号
+    </script>
+</body>
+
+</html>

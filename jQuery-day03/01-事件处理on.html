@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>01-事件处理on</title>
+    <script src="jquery.min.js"></script>
+    <style>
+        div {
+            width: 100px;
+            height: 100px;
+            background-color: pink;
+        }
+
+        .current {
+            background-color: purple;
+        }
+    </style>
+</head>
+
+<body>
+    <div></div>
+    <ul>
+        <li>li孩子</li>
+        <li>li孩子</li>
+        <li>li孩子</li>
+        <li>li孩子</li>
+        <li>li孩子</li>
+        <li>li孩子</li>
+    </ul>
+    <ol></ol>
+    <script>
+        $(function () {
+            //优势1：事件处理on 处理多个事件
+            //1)对象形式处理多个事件，事件类型: 过程处理函数 之间用逗号隔开
+            //同一个对象触发不同事件对应不同的处理函数
+            /* $('div').on({
+                mouseenter: function () {
+                    $(this).css('backgroundColor', 'red')
+                },
+                click: function () {
+                    $(this).css('backgroundColor', 'blue')
+                },
+                mouseleave: function () {
+                    $(this).css('backgroundColor', 'green')
+                }
+            }) */
+            //2)空格隔开多个事件类型，触发同一个过程处理函数 适合用于切换类
+            //同一对象触发不同事件对应相同的处理函数
+            $('div').on('mouseenter mouseleave', function () {
+                $(this).toggleClass('current')
+            })
+
+            //优势2：事件委派
+            //将事件绑在ul父亲上，触发的对象是li孩子，通过孩子触发事件冒泡让ul父亲触发事件
+            //以前的做法
+            /* $('ul li').click(function () {
+                $(this).css('background', 'red')
+            }) */
+            $('ul').on('click', 'li', function () {
+                $(this).css('background', 'red')
+            })
+
+            //优势3：可以给未来动态创建的元素绑定事件
+            /* $('ol li').click(function () {
+                $(this).css('color', 'red')
+            }) */
+            $('ol').on('click', 'li', function () {
+                $(this).css('color', 'red')
+            })
+
+            var li = $('<li>后来的</li>')
+            $('ol').append(li)
+
+        })
+    </script>
+</body>
+
+</html>

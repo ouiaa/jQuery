@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>02-微博发布效果</title>
+    <script src="jquery.min.js"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        .box {
+            width: 500px;
+            /* 为了让新发布的li在盒子内，就不给盒子设置高度 */
+            border: 1px solid #ccc;
+            margin: 100px auto;
+            padding: 20px 0;
+        }
+
+        textarea {
+            width: 350px;
+            height: 230px;
+            resize: none;
+            outline: none;
+        }
+
+        ul {
+            width: 300px;
+            margin-left: 80px;
+        }
+
+        ul li {
+            line-height: 25px;
+            border-bottom: 1px dashed #ccc;
+            list-style: none;
+            display: none;
+        }
+
+        ul li a {
+            float: right;
+        }
+    </style>
+    <script>
+        $(function () {
+            //1.点击发布按钮,动态创建一个小li ,放入文本框的内容和删除按钮,并且添加到ul中
+            $('button').on('click', function () {
+                var li = $('<li></li>')
+                li.html($('textarea').val() + '<a href="javascript:;">删除</a>')
+                $('ul').prepend(li)
+                li.slideDown() //让li滑动出现，需要先添加li再添加滑动效果，并且需要对li设置隐藏
+                $('textarea').val('')//清空文本域
+            })
+            //2.点击删除按钮，删除当前的微博留言
+            //注意使用on才能给动态创建的元素绑定事件
+            $('ul').on('click', 'a', function () {
+                $(this).parent().slideUp(function () {//这个this指的是当前的a
+                    $(this).remove()//这个this指的是当前的li，利用回调函数，让其滑动结束后再进行删除
+                })//删除按钮所在的li删除，滑动只是隐藏，不能删除
+            })
+        })
+    </script>
+</head>
+
+<body>
+    <div class="box">
+        <span>微博发布</span>
+        <textarea name="" id="" cols="30" rows="10"></textarea>
+        <button>发布</button>
+        <ul></ul>
+    </div>
+</body>
+
+</html>

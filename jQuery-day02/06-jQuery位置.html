@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>06-jQuery位置</title>
+    <script src="jquery.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .father {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            background-color: purple;
+            margin: 100px 100px;
+        }
+
+        .son {
+            position: absolute;
+            top: 10px;
+            left: 5px;
+            width: 100px;
+            height: 100px;
+            background-color: pink;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="father">
+        <div class="son"></div>
+    </div>
+    <script>
+        $(function () {
+            //1.获取设置距离文档的位置（偏移） offset
+            //可读写
+            console.log($('.son').offset());
+            console.log($('.son').offset().left);
+            // $('.son').offset({
+            //     top: 200,
+            //     left: 200
+            // })
+            //2.获取距离带有定位父级位置（偏移） position 如果没有带有定位的父级，则以文档为准
+            //注意只能获取，不能设置，只读
+            console.log($('.son').position());
+        })
+    </script>
+</body>
+
+</html>

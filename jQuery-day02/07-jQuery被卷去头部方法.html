@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>07-jQuery被卷去头部方法</title>
+    <script src="jquery.min.js"></script>
+    <style>
+        .main {
+            width: 1000px;
+            height: 800px;
+            margin: 300px auto 0;
+            background-color: pink;
+        }
+
+        .back {
+            display: none;
+            position: fixed;
+            top: 420px;
+            right: 20px;
+            width: 40px;
+            height: 70px;
+            background-color: purple;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main"></div>
+    <div class="back">返回顶部</div>
+    <script>
+        $(function () {
+            //页面滚动事件 
+            $(document).scrollTop(100)//还可以设置被卷去的头部，这样默认刷新页面就被卷去100
+            //scrollTop()被卷去的头部 scrollLeft()被卷去的左侧
+            var boxTop = $('.main').offset().top
+            $(window).scroll(function () {
+                //$(document).scrollTop()页面被卷去的头部
+                console.log($(document).scrollTop());
+                if ($(document).scrollTop() >= boxTop) {
+                    $('.back').fadeIn()
+                } else {
+                    $('.back').fadeOut()
+                }
+            })
+            //返回顶部
+            $('.back').click(function () {
+                // $(document).scrollTop(0)//可以返回顶部，但没有返回动画
+                //使用animate动画函数返回顶部，注意是元素做动画，不能写document
+                $('body,html').animate({
+                    scrollTop: 0
+                })
+            })
+        })
+    </script>
+</body>
+
+</html>

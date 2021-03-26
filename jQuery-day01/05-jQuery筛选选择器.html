@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>05-jQuery筛选选择器</title>
+    <script src="jquery.min.js"></script>
+</head>
+
+<body>
+    <ul>
+        <li>保持谨慎</li>
+        <li>保持谨慎</li>
+        <li>保持谨慎</li>
+        <li>保持谨慎</li>
+        <li>保持谨慎</li>
+    </ul>
+    <ol>
+        <li>不放纵</li>
+        <li>不放纵</li>
+        <li>不放纵</li>
+        <li>不放纵</li>
+        <li>不放纵</li>
+        <li>不放纵</li>
+    </ol>
+    <script>
+        $(function () {
+            //让ul第一个li字体变红色
+            $('ul li:first').css('color', 'red')
+            //让ul第三个li字体变绿色，对应索引号为2
+            $('ul li:eq(2)').css('color', 'green')
+            //让ol的索引号为偶数的li字变粉色
+            $('ol li:even').css('color', 'pink')
+            //让ol的索引号为奇数的li变灰色
+            $('ol li:odd').css('color', 'gray')
+        })
+    </script>
+</body>
+
+</html>

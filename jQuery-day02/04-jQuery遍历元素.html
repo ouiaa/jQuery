@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>04-jQuery遍历元素</title>
+    <script src="jquery.min.js"></script>
+</head>
+
+<body>
+    <div>1</div>
+    <div>2</div>
+    <div>3</div>
+    <script>
+        $(function () {
+            //对同一类元素做不同操作，使用遍历
+            //1.$('div').each(function (index, domEle){})方法遍历元素
+            var arr = ['red', 'green', 'blue']
+            var sum = 0;
+            $('div').each(function (index, domEle) {
+                //回调函数第一个参数是索引号，自己可以指定索引号名称
+                console.log(index);//0 1 2
+                //回调函数第二个参数是dom元素对象，因此我们需要转化成jQuery对象才能用css方法
+                //给三个div添加不同的字体颜色
+                $(domEle).css('color', arr[index])
+                //将div里面的数字相加，记得先转化为数字型
+                sum += parseInt($(domEle).text())
+            })
+            console.log(sum);
+
+            //2. $.each(arr, function (i, ele){})
+            //遍历数组
+            $.each(arr, function (i, ele) {
+                console.log(i);
+                console.log(ele);
+            })
+            //遍历对象
+            $.each({
+                name: 'auue',
+                age: 18
+            }, function (i, ele) {
+                console.log(i);//属性名
+                console.log(ele);//属性值
+            })
+        })
+    </script>
+</body>
+
+</html>

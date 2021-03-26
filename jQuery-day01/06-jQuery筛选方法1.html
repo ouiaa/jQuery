@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>06-jQuery筛选方法1</title>
+    <script src="jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="grandfather">
+        <div class="father">
+            <div class="son">儿子</div>
+        </div>
+    </div>
+    <div class="box">
+        <p>子</p>
+        <div class="boxs">
+            <p>孙</p>
+        </div>
+    </div>
+    <script>
+        //注意都是方法，需要带括号
+        $(function () {
+            //1.父 parent() 返回的是最近以及的父级元素 亲爸爸
+            console.log($('.son').parent());//father
+            //2.子
+            //1）亲儿子 children('') 类似于子代选择器ul>li
+            // $('.box').children('p').css('color', 'red')
+            //2)所有孩子，包括儿子、孙子 find('') 类似于后代选择器
+            $('.box').find('p').css('color', 'red')
+        })
+    </script>
+</body>
+
+</html>

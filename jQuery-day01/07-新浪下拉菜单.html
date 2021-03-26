@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>07-新浪下拉菜单</title>
+    <script src="jquery.min.js"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            list-style: none;
+        }
+
+        .nav>li {
+            position: relative;
+            float: left;
+            text-align: center;
+        }
+
+        .nav>li a {
+            display: block;
+            font-size: 18px;
+            height: 41px;
+            line-height: 41px;
+            text-decoration: none;
+            color: #333;
+            padding: 0 10px;
+            /* background-color: skyblue; */
+        }
+
+        .nav>li a:hover {
+            background-color: #eee;
+        }
+
+        .nav ul {
+            display: none;
+            position: absolute;
+            top: 41px;
+            left: 0;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        .nav ul li {
+            height: 30px;
+            border: 1px solid #FECC5B;
+            border-top: 0;
+            /* background-color: pink; */
+        }
+
+        .nav ul li:hover {
+            background-color: pink;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <ul class="nav">
+        <li>
+            <a href="#">登录</a>
+        </li>
+        <li>
+            <a href="#">微博</a>
+            <ul>
+                <li>评论</li>
+                <li>私信</li>
+                <li>@我</li>
+            </ul>
+        </li>
+        <li>
+            <a href="#">博客</a>
+            <ul>
+                <li>评论</li>
+                <li>私信</li>
+                <li>@我</li>
+            </ul>
+        </li>
+        <li>
+            <a href="#">邮箱</a>
+            <ul>
+                <li>评论</li>
+                <li>私信</li>
+                <li>@我</li>
+            </ul>
+        </li>
+    </ul>
+    <script>
+        $(function () {
+            //1.鼠标经过li，显示ul
+            $('.nav>li').mouseover(function () {
+                //$(this) jQuery当前元素，this不用加引号
+                //show()显示元素    hide()隐藏元素
+                $(this).children('ul').show()
+            })
+            $('.nav>li').mouseout(function () {
+                $(this).children('ul').hide()
+            })
+        })
+    </script>
+</body>
+
+</html>

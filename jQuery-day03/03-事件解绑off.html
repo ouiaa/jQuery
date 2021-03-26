@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>03-事件解绑off</title>
+    <script src="jquery.min.js"></script>
+    <style>
+        div {
+            width: 100px;
+            height: 100px;
+            background-color: purple;
+        }
+    </style>
+</head>
+
+<body>
+    <div></div>
+    <ul>
+        <li>li</li>
+        <li>li</li>
+        <li>li</li>
+        <li>li</li>
+    </ul>
+    <p>ppp</p>
+    <script>
+        $(function () {
+            $('div').on({
+                click: function () {
+                    console.log('点击');
+                },
+                mouseenter: function () {
+                    console.log('经过');
+                }
+            })
+            // $('div').off()//解绑div元素所有事件处理程序
+            $('div').off('click')//解绑div元素的点击事件
+            $('ul').on('click', 'li', function () {
+                $(this).css('color', 'red')
+            })
+            $('ul').off('click', 'li')//解绑事件委托
+            $('p').one('click', function () {
+                console.log('pp');
+            })
+        })
+
+
+    </script>
+</body>
+
+</html>

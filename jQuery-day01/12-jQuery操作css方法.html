@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>12-jQuery操作css方法</title>
+    <script src="jquery.min.js"></script>
+    <style>
+        div {
+            width: 100px;
+            height: 100px;
+            background-color: pink;
+        }
+    </style>
+</head>
+
+<body>
+    <div></div>
+    <script>
+        $(function () {
+            console.log($('div').css('width'));//100px
+            // $('div').css('background-color', 'blue')//属性名必须带引号
+            // $('div').css('width', 200)//属性值是数字可以不加引号，不带单位
+            //对象形式设置多种样式
+            $('div').css({
+                width: 250,
+                height: 250,
+                backgroundColor: 'red' //如果是复合属性必须采取驼峰命名法
+            })
+        })
+    </script>
+</body>
+
+</html>
