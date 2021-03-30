@@ -2238,3 +2238,337 @@ gitHub : https://qithub.com/alvarotio/fullPage.is
 **bootstrap JS插件:** 
 
 bootstrap框架也是依赖于jQuery开发的,因此里面的js插件使用,也必须引入jQuery文件。
+
+
+
+# 案例：todolist
+
+实现：
+
+![image-20210330113516205](C:\Users\Daii\AppData\Roaming\Typora\typora-user-images\image-20210330113516205.png)
+
+![image-20210330113521979](C:\Users\Daii\AppData\Roaming\Typora\typora-user-images\image-20210330113521979.png)
+
+![image-20210330113525330](C:\Users\Daii\AppData\Roaming\Typora\typora-user-images\image-20210330113525330.png)
+
+## 需求分析
+
+①文本框里面输入内容,按下回车,就可以生成待办事项。
+
+②点击待办事项复选框,就可以把当前数据添加到已完成事项里面。
+
+③点击已完成事项复选框,就可以把当前数据添加到待办事项里面。
+
+**但是本页面内容刷新页面不会丢失。** localStorage
+
+## 案例分析
+
+①刷新页面不会丢失数据,因此需要用到**本地存储localStorage**
+
+②核心思路:不管按下回车,还是点击复选框,都是把本地存储的数据加载到页面中,这样保证刷新关闭页面不会丢失数据
+
+③<u>**存储的数据格式: var todolist= [{ title: 'xx’ , done: false}]**</u>，使用对象来存储数据
+
+## 功能实现
+
+### **1.toDoList按下回车把新数据添加到本地存储里面**
+
+①切记:页面中的数据,都要从**本地存储**里面获取,这样刷新页面不会丢失数据,所以先要把数据保存到本地存储里面。
+
+②利用事件对象.keyCode判断用户按下回车键(13)。
+
+③声明一个数组,保存数据。
+
+④**先要读取本地存储原来的数据**(声明函数getData() ), 放到这个数组里面。
+
+⑤之后把最新从表单获取过来的数据,追加到数组里面。
+
+⑥最后把数组存储给本地存储(声明函数savaDate()
+
+**关键点：**
+
+1.使用**数组-对象的格式存储数据**，对象里存放内容与done(任务是否完成)。
+
+由于**本地存储没有直接追加内容的方法，通过中介数组实现**。将最新的数据追加给数组，再将数组存储到本地存储（实则是数据替换，不算追加）。
+
+2.注意**本地存储只能存储字符串**，存储时需要使用**JSON.stringify**转为字符串，读取出来的数据使用**JSON.parse()**转为我们需要的对象数据格式
+
+3.需要多次读取/存储数据，将这些代码块封装为函数
+
+```js
+$(function () {
+    // 1.toDoList按下回车把新数据添加到本地存储里面
+    // 1）利用事件对象.keyCode判断用户按下回车键(13)。
+    $('.add').on('keyup', function (e) {
+        if (e.keyCode == 13) {
+            // 2）读取本地存储原来的数据
+            // 如果本地存储有数据，得到一个数组，没有数据也要得到一个数组，为空数组
+            var local = getData()
+            // console.log(local);
+            // 由于本地存储没有直接追加内容的方法，通过中介数组实现：（所以就算本地存储没有数据也要返回数组）
+            // （1）对local数组进行数据更新，把最新的数据追加给数组,注意数据格式是对象格式
+            local.push({ title: $(this).val(), done: false }) //title为用户输入的任务内容,done为是否完成，默认都是未完成
+            // （2）将数组存储给本地存储 此处单独封装成函数
+            saveData(local)
+        }
+    })
+
+    // 读取本地存储的数据 由于需要多次读取，因此单独封装成函数，减少代码量
+    function getData() {
+        var data = localStorage.getItem('todolist')
+        // 判断本次存储下是否有数据，有则返回相应的数组，无则返回空数组
+        if (data != null) {
+            // 注意本地存储的数据是字符串形式，我们需要的是对象格式，需要进行转换
+            return JSON.parse(data)
+        } else {
+            return []
+        }
+    }
+    // 存储本地存储的数据
+    function saveData(data) {
+        // 注意：本地存储只能存储字符串类型，因此需要将传入的参数转为字符串类型
+        localStorage.setItem('todolist', JSON.stringify(data))
+    }
+})
+```
+
+![image-20210330154548754](C:\Users\Daii\AppData\Roaming\Typora\typora-user-images\image-20210330154548754.png)
+
+### 2.toDoList本地存储数据渲染加载到页面
+
+①因为后面也会<u>经常渲染加载操作,所以声明一个函数load</u> ,方便后面调用
+
+②先要读取本地存储数据。
+
+③之后遍历这个数据( $.each()) , 有几条数据,就生成几个小li添加到ol里面。
+
+④**每次渲染之前,先把原先里面ol的内容清空,然后渲染加载最新的数据。**
+
+关键点：
+
+1.用户第一次进入页面也能看到之前列表内容，因此需要**每次打开页面，自动调用渲染函数**
+
+2.ol的内容清空 $('ol').empty()
+
+```javascript
+// 每次打开页面都自动渲染一次数据
+    load()
+    // 2.数据渲染到页面
+    function load() {
+        // 1)先要读取本地存储数据
+        var data = getData()
+        // console.log(data);
+        // 4)每次渲染前要将ol内数据清空，即清空每次打开页面渲染出来的数据
+        $('ol').empty()
+        // 2)遍历这个数据( $.each()) , 有几条数据,就生成几个小li添加到ol里面
+        $.each(data, function (i, ele) {
+            // 将最新数据放到最前面
+            $('ol').prepend('<li><input type="checkbox" name="" id=""><p>' + ele.title + '</p><a href="javascript:;">-</a></li>')
+        })
+    }
+```
+
+![image-20210330161138832](C:\Users\Daii\AppData\Roaming\Typora\typora-user-images\image-20210330161138832.png)
+
+### 3.toDoList删除操作
+
+①点击里面的a链接,**删除的不是Ii ,而是删除本地存储对应的数据。**
+
+②核心原理:先获取本地存储数据,删除对应的数据,保存给本地存储,重新渲染列表li
+
+③我们可以给链接自定义属性记录当前的索引号
+
+④根据这个索引号删除相关的数据---**数组的splice(i, 1)方法**
+
+⑤存储修改后的数据,然后存储给本地存储
+
+⑥重新渲染加载数据列表
+
+⑦因为a是动态创建的,我们使用on方法绑定事件
+
+关键点：
+
+1.删除本地存储对应的数据，**本地存储的数据是不能直接删除的，通过删除数组里对应的数据，再存储到本地数据内实现。**
+
+2.点击a进行删除，可以使用事件**委托给ol**，而不是ol li。原因：如下代码块,a始终是li的第三个孩子，即索引号始终是2，我们需要的是当前a所在li的索引号。
+
+3.获得当前a所在li的索引号，
+
+**$(this).index()获得索引号方法，只针对亲儿子**。我们这里a是ol的孙子，无法直接使用
+
+```html
+		<ol class="todolist">
+            <li>
+                <input type="checkbox" name="" id="">
+                <p>11</p>
+                <a href="">-</a>
+            </li>
+        </ol>
+```
+
+解决方法：
+
+1）使用parent()  ——不好用，获得的索引号与数组的索引号不对应，如[1,2,3]，数组索引为0，1，2，但获取过来的索引为2，1，0（因为li是添加到最前面）；除此之外利用索引号将任务归入”正在进行“与”已完成”列表，问题很复杂。
+
+```javascript
+var index = $(this).parent().index()
+```
+
+**2）在生成li的时候给a添加自定义索引号id=i，通过获得自定义属性（attr）得到当前的索引号**
+
+```javascript
+$('ol').prepend('<li><input type="checkbox" name="" id=""><p>' + ele.title + '</p><a href="javascript:;" id=' + i + '>-</a></li>')
+```
+
+**4.数组的splice(i, 1)方法**，splice(从哪个位置开始删除-索引号，删除几个元素)
+
+```js
+// 3.toDoList删除操作
+    $('ol').on('click', 'a', function () {
+        // 1)先获取本地存储数据
+        var data = getData()
+        // 2)删除数组中对应的数据
+        // 获得当前a所在li的索引号parent()
+        var index = $(this).attr('id')
+        // console.log(index);
+        // splice(从哪个位置开始删除-索引号，删除几个元素)
+        data.splice(index, 1)
+        // 3)存储本地存储的数据
+        saveData(data)
+        // 4)重新渲染页面
+        load()
+    })
+```
+
+删除“3”
+
+![image-20210330182954241](C:\Users\Daii\AppData\Roaming\Typora\typora-user-images\image-20210330182954241.png)
+
+### 4.toDoList正在进行和已完成选项操作
+
+①**当我们点击了小的复选框,修改本地存储数据,再重新渲染数据列表。**
+
+②点击之后，获取本地存储数据。
+
+③**修改对应数据属性done为当前复选框的checked状态**。
+
+④之后保存数据到本地存储
+
+⑤重新渲染加载数据列表
+
+⑥load 加载函数里面，添加一个判断条件，通过done里面的值判断任务是否完成**，如果当前数据的done为true 就是已经完成的,就把列表渲染加载到ul里面，否则加载到ol里**
+
+
+
+关键点：
+
+1.这里给勾选checkbox后，不是将正在进行中的任务ol里的li移动到已经完成列表ul里。**核心思路：通过修改本地存储数据，再重新渲染数据列表实现，渲染时通过done里面的值来判断放在ol还是ul里**
+
+2.在load 加载函数里的**遍历函数中判断done的值**，从而决定放入ul/ol，注意同时修改里面的checked属性，因为默认是不勾选的
+
+```javascript
+$.each(data, function (i, ele) {
+            if (ele.done) {
+                // 将最新数据放到最前面
+                // 完成放入“已经完成”列表ul里,注意修改里面的checked
+                $('ul').prepend('<li><input type="checkbox" name="" id="" checked="checked"><p>' + ele.title + '</p><a href="javascript:;" id=' + i + '>-</a></li>')
+            } else {
+                // 没完成放入ol里
+                $('ol').prepend('<li><input type="checkbox" name="" id=""><p>' + ele.title + '</p><a href="javascript:;" id=' + i + '>-</a></li>')
+            }
+
+        })
+```
+
+3.清空ul列表内的任务，否则加载的时候会重复添加
+
+```js
+ // 4)每次渲染前要将ol内数据清空，即清空每次打开页面渲染出来的数据
+        // ul内数据也要清空
+        $('ol,ul').empty()
+```
+
+4.**需要获得当前checkbox所在li的索引号,通过兄弟a的自定义属性获取**，兄弟的就是我的索引号
+
+```js
+// 4.toDoList正在进行和已完成选项操作
+    // 使用并集选择器，两个列表里的checkbox属性都要判断
+    $('ul,ol').on('click', 'input', function () {
+        // 1）获取本地存储数据
+        var data = getData()
+        // 2)修改数据
+        // 需要获得当前checkbox所在li的索引号,通过兄弟a的自定义属性，兄弟的就是我的索引号
+        var index = $(this).siblings('a').attr('id')
+        // console.log('input' + index);
+        // 得到并修改当前checkbox的状态
+        data[index].done = $(this).prop('checked');
+        // 3)存储本地存储的数据
+        saveData(data)
+        // 4)重新渲染页面
+        load()
+    })
+```
+
+### 5.toDoList统计正在进行个数和已经完成个数
+
+①在我们load函数里面操作
+
+②声明2个变量: todoCount待办个数doneCount已完成个数
+
+③当进行遍历本地存储数据的时候,如果数据done为false，则todoCount+ +,否则doneCount++
+
+④最后修改相应的元素text()
+
+```js
+ // 5.toDoList统计正在进行个数和已经完成个数
+        var todoCount = 0
+        var doneCount = 0
+        $.each(data, function (i, ele) {
+            if (ele.done) {
+                // 将最新数据放到最前面
+                // 完成放入“已经完成”列表ul里,注意修改里面的checked
+                $('ul').prepend('<li><input type="checkbox" name="" id="" checked="checked"><p>' + ele.title + '</p><a href="javascript:;" id=' + i + '>-</a></li>')
+                doneCount++
+                console.log(doneCount);
+            } else {
+                // 没完成放入ol里
+                $('ol').prepend('<li><input type="checkbox" name="" id=""><p>' + ele.title + '</p><a href="javascript:;" id=' + i + '>-</a></li>')
+                todoCount++
+            }
+        });
+        $('.todocount').text(todoCount)
+        $('.donecount').text(doneCount)
+```
+
+![image-20210330194049957](C:\Users\Daii\AppData\Roaming\Typora\typora-user-images\image-20210330194049957.png)
+
+
+
+细节完善：
+
+**输入为空**回车时，弹出对话框，不为空时才加到任务列表里;回车后清空表单内容
+
+```javascript
+if (e.keyCode == 13) {
+            if ($(this).val() == '') {
+                alert('请输入内容')
+            } else {
+                // 2）读取本地存储原来的数据
+                // 如果本地存储有数据，得到一个数组，没有数据也要得到一个数组，为空数组
+                var local = getData()
+                // console.log(local);
+                // 由于本地存储没有直接追加内容的方法，通过中介数组实现：（所以就算本地存储没有数据也要返回数组）
+                // （1）对local数组进行数据更新，把最新的数据追加给数组,注意数据格式是对象格式
+                local.push({ title: $(this).val(), done: false }) //title为用户输入的任务内容,done为是否完成，默认都是未完成
+                // （2）将数组存储给本地存储 此处单独封装成函数
+                saveData(local)
+
+                // 2.toDoList本地存储数据渲染加载到页面
+                load()
+
+                // 清空表单内数据
+                $('.add').val('')
+            }
+        }
+```
+
